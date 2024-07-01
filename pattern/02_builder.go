@@ -35,6 +35,7 @@ func main() {
 	fmt.Println(house.floor, "\n", house.walls, "\n", house.roof)
 }
 
+// интерфейс строителя, который будет строить дом
 type Builder interface {
 	BuildFloor(floor string)
 	BuildWalls(walls string)
@@ -43,28 +44,31 @@ type Builder interface {
 	Reset()
 }
 
+// класс директор, который будет отдавать приказы строителю
 type Director struct {
 	builder Builder
 }
 
+// метод для установки конкретного строителя для объекта
 func (d *Director) SetBuilder(builder Builder) {
 	d.builder = builder
 }
 
+// метод для отдачи приказов директором строителю
 func (d *Director) Build(floor, walls, roof string) {
 	d.builder.BuildFloor(floor)
 	d.builder.BuildWalls(walls)
 	d.builder.BuildRoof(roof)
 }
 
-type ConcreteBuilder struct {
-	house *House
-}
-
 type House struct {
 	floor string
 	walls string
 	roof  string
+}
+
+type ConcreteBuilder struct {
+	house *House
 }
 
 func (b *ConcreteBuilder) BuildFloor(floor string) {
