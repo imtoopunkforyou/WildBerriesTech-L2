@@ -30,7 +30,7 @@ type Command interface {
 	Execute()
 }
 
-// получатель, имеющий набор действий, которые команда может запрашивать
+// Получатель, имеющий набор действий, которые команда может запрашивать.
 type Receiver struct{}
 
 func (r *Receiver) LightON() {
@@ -41,7 +41,7 @@ func (r *Receiver) LightOFF() {
 	fmt.Println("Light is off")
 }
 
-// классы, реализующие конкретные команды
+// Классы, реализующие конкретные команды.
 type ButtonON struct {
 	receiver *Receiver
 }
@@ -58,7 +58,7 @@ func (b *ButtonOFF) Execute() {
 	b.receiver.LightOFF()
 }
 
-// инициатор, записывающий команды в стэк и провоцирует выполнение
+// Инициатор, записывающий команды в стэк и провоцирует их выполнение.
 type Invoker struct {
 	commands []Command
 }

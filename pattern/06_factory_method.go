@@ -32,19 +32,19 @@ func main() {
 	product.Use()
 }
 
-// интерфейс для создания продукта фабрикой
+// Интерфейс для создания продукта фабрикой.
 type Creator interface {
 	CreateProduct(product int) Product
 }
 
-// инетрфейс созданных продуктов фабрикой
+// Интерфейс созданных продуктов фабрикой.
 type Product interface {
 	Use()
 }
 
 type ConcreteCreator struct{}
 
-// конструктор фабрики
+// Конструктор фабрики.
 func NewCreator() Creator {
 	return &ConcreteCreator{}
 }

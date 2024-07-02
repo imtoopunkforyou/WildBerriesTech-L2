@@ -22,7 +22,7 @@ func main() {
 	handlers.HandleRequest(3)
 }
 
-// конструктор цепочки запросов
+// Конструктор цепочки запросов.
 func NewChain() *ConcreteHandlerA {
 	return &ConcreteHandlerA{next: &ConcreteHandlerB{next: &ConcreteHandlerC{}}}
 }

@@ -26,19 +26,19 @@ func main() {
 	}
 }
 
-// интерфейс, чтобы посетитель мог посетить нужный класс через него
+// Интерфейс, чтобы посетитель мог посетить нужный класс через него.
 type Place interface {
 	Accept(v Visitor)
 }
 
-// интерфейс посетителя
+// Интерфейс посетителя.
 type Visitor interface {
 	VisitGarage(g *Garage)
 	VisitHospital(h *Hospital)
 	VisitFabric(f *Fabric)
 }
 
-// класс, имплеминтирующая интерфейс посетителя
+// Класс, имплеминтирующая интерфейс посетителя.
 type TownVisitor struct{}
 
 func (v *TownVisitor) VisitGarage(g *Garage) {

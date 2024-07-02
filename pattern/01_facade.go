@@ -25,19 +25,19 @@ func main() {
 	fmt.Println(computer.startComputer())
 }
 
-// конструктор нашего фасада
+// Конструктор нашего фасада.
 func NewComputer() *Computer {
 	return &Computer{cpu: &CPU{}, ram: &RAM{}, vram: &VideoRAM{}}
 }
 
-// передаем объекты в фасад, с которыми он будет работаь
+// Передаем объекты в фасад, с которыми он будет работать.
 type Computer struct {
 	cpu  *CPU
 	ram  *RAM
 	vram *VideoRAM
 }
 
-// метод фасада, который будет использовать объекты других классов
+// Метод фасада, который будет использовать объекты других классов.
 func (c *Computer) startComputer() string {
 	result := []string{c.cpu.startCPU(), c.ram.startRAM(), c.vram.startVideoRam(), "Computer is started"}
 	return strings.Join(result, "\n")
