@@ -22,71 +22,72 @@ import "fmt"
 func main() {
 	builder := &ConcreteBuilder{house: &House{}}
 	director := &Director{}
-	director.SetBuilder(builder)
-	director.Build("Wood floor", "Brick Walls", "Tile roof")
-	house := builder.GetHouse()
+	director.setBuilder(builder)
+	director.build("Wood floor", "Brick Walls", "Tile roof")
+	house := builder.getHouse()
 	fmt.Println(house.floor, "\n", house.walls, "\n", house.roof)
 
-	builder.Reset()
-	builder.BuildFloor("Brick floor")
-	builder.BuildWalls("Wood floor")
-	builder.BuildRoof("Tile roof")
-	house = builder.GetHouse()
+	builder.reset()
+	builder.buildFloor("Brick floor")
+	builder.buildWalls("Wood floor")
+	builder.buildRoof("Tile roof")
+	house = builder.getHouse()
 	fmt.Println(house.floor, "\n", house.walls, "\n", house.roof)
 }
 
-// Интерфейс строителя, который будет строить дом.
+// Builder Интерфейс строителя, который будет строить дом.
 type Builder interface {
-	BuildFloor(floor string)
-	BuildWalls(walls string)
-	BuildRoof(roof string)
-	GetHouse() *House
-	Reset()
+	buildFloor(floor string)
+	buildWalls(walls string)
+	buildRoof(roof string)
+	getHouse() *House
+	reset()
 }
 
-// Класс директор, который будет отдавать приказы строителю.
+// Director Класс директор, который будет отдавать приказы строителю.
 type Director struct {
 	builder Builder
 }
 
-// Метод для установки конкретного строителя для объекта.
-func (d *Director) SetBuilder(builder Builder) {
+func (d *Director) setBuilder(builder Builder) {
 	d.builder = builder
 }
 
-// Метод для отдачи приказов директором строителю.
-func (d *Director) Build(floor, walls, roof string) {
-	d.builder.BuildFloor(floor)
-	d.builder.BuildWalls(walls)
-	d.builder.BuildRoof(roof)
+func (d *Director) build(floor, walls, roof string) {
+	d.builder.buildFloor(floor)
+	d.builder.buildWalls(walls)
+	d.builder.buildRoof(roof)
 }
 
+// House Объект, который будет делать строитель.
 type House struct {
 	floor string
 	walls string
 	roof  string
 }
 
+// ConcreteBuilder Реализация строителя.
 type ConcreteBuilder struct {
 	house *House
 }
 
-func (b *ConcreteBuilder) BuildFloor(floor string) {
+func (b *ConcreteBuilder) buildFloor(floor string) {
 	b.house.floor = floor
 }
 
-func (b *ConcreteBuilder) BuildWalls(walls string) {
+// BuildWalls Создает часть объекта House(стены)
+func (b *ConcreteBuilder) buildWalls(walls string) {
 	b.house.walls = walls
 }
 
-func (b *ConcreteBuilder) BuildRoof(roof string) {
+func (b *ConcreteBuilder) buildRoof(roof string) {
 	b.house.roof = roof
 }
 
-func (b *ConcreteBuilder) GetHouse() *House {
+func (b *ConcreteBuilder) getHouse() *House {
 	return b.house
 }
 
-func (b *ConcreteBuilder) Reset() {
+func (b *ConcreteBuilder) reset() {
 	b.house = &House{}
 }

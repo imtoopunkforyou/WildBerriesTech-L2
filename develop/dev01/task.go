@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	t, err := GetTime()
+	t, err := getTime()
 	if err != nil {
 		log.Println("Can't take current time: ", err)
 		os.Exit(1)
@@ -17,7 +17,7 @@ func main() {
 	fmt.Println("Current time:", t)
 }
 
-func GetTime() (time.Time, error) {
+func getTime() (time.Time, error) {
 	t, err := ntp.Time("0.beevik-ntp.pool.ntp.org")
 	if err != nil {
 		return time.Time{}, err

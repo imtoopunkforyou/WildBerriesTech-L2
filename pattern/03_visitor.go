@@ -18,55 +18,54 @@ import "fmt"
 */
 
 func main() {
-	visitor := &TownVisitor{}
-	places := []Place{&Fabric{}, &Garage{}, &Hospital{}}
+	visitor := &townVisitor{}
+	places := []Place{&fabric{}, &garage{}, &hospital{}}
 
 	for _, place := range places {
 		place.Accept(visitor)
 	}
 }
 
-// Интерфейс, чтобы посетитель мог посетить нужный класс через него.
+// Place Интерфейс, чтобы посетитель мог посетить нужный класс через него.
 type Place interface {
 	Accept(v Visitor)
 }
 
-// Интерфейс посетителя.
+// Visitor Интерфейс посетителя.
 type Visitor interface {
-	VisitGarage(g *Garage)
-	VisitHospital(h *Hospital)
-	VisitFabric(f *Fabric)
+	visitGarage(_ *garage)
+	visitHospital(_ *hospital)
+	visitFabric(_ *fabric)
 }
 
-// Класс, имплеминтирующая интерфейс посетителя.
-type TownVisitor struct{}
+type townVisitor struct{}
 
-func (v *TownVisitor) VisitGarage(g *Garage) {
+func (v *townVisitor) visitGarage(_ *garage) {
 	fmt.Println("I'm visit garage")
 }
 
-func (v *TownVisitor) VisitHospital(h *Hospital) {
+func (v *townVisitor) visitHospital(_ *hospital) {
 	fmt.Println("I'm visit hospital")
 }
 
-func (v *TownVisitor) VisitFabric(f *Fabric) {
+func (v *townVisitor) visitFabric(_ *fabric) {
 	fmt.Println("I'm visit fabric")
 }
 
-type Garage struct{}
+type garage struct{}
 
-func (h *Garage) Accept(v Visitor) {
-	v.VisitGarage(h)
+func (h *garage) Accept(v Visitor) {
+	v.visitGarage(h)
 }
 
-type Hospital struct{}
+type hospital struct{}
 
-func (h *Hospital) Accept(v Visitor) {
-	v.VisitHospital(h)
+func (h *hospital) Accept(v Visitor) {
+	v.visitHospital(h)
 }
 
-type Fabric struct{}
+type fabric struct{}
 
-func (f *Fabric) Accept(v Visitor) {
-	v.VisitFabric(f)
+func (f *fabric) Accept(v Visitor) {
+	v.visitFabric(f)
 }

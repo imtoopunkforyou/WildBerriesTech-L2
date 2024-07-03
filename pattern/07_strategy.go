@@ -19,56 +19,56 @@ import "fmt"
 
 func main() {
 	ctx := Context{}
-	ctx.SetOperation(&Addition{})
+	ctx.SetOperation(&addition{})
 	ctx.Calculation(5, 2)
-	ctx.SetOperation(&Subtraction{})
+	ctx.SetOperation(&subtraction{})
 	ctx.Calculation(5, 2)
-	ctx.SetOperation(&Multiplication{})
+	ctx.SetOperation(&multiplication{})
 	ctx.Calculation(5, 2)
-	ctx.SetOperation(&Division{})
+	ctx.SetOperation(&division{})
 	ctx.Calculation(5, 2)
 }
 
-// Интерфейс, который объединяет в себе математические операции над двумя int.
+// Strategy Интерфейс, который объединяет в себе математические операции над двумя int.
 type Strategy interface {
 	Calculation(x, y int)
 }
 
-// Интерфейс для работы с интерфейсом стратегии.
+// Context Интерфейс для работы с интерфейсом стратегии.
 type Context struct {
 	ctx Strategy
 }
 
-// Метод установки нужной стратегии.
+// SetOperation Метод установки нужной стратегии.
 func (c *Context) SetOperation(strategy Strategy) {
 	c.ctx = strategy
 }
 
-// Выполнение математический операци под выбранную стратегию.
+// Calculation Выполнение математический операции под выбранную стратегию.
 func (c *Context) Calculation(x, y int) {
 	c.ctx.Calculation(x, y)
 }
 
-type Addition struct{}
+type addition struct{}
 
-func (a Addition) Calculation(x, y int) {
+func (a addition) Calculation(x, y int) {
 	fmt.Println(x + y)
 }
 
-type Subtraction struct{}
+type subtraction struct{}
 
-func (s Subtraction) Calculation(x, y int) {
+func (s subtraction) Calculation(x, y int) {
 	fmt.Println(x - y)
 }
 
-type Multiplication struct{}
+type multiplication struct{}
 
-func (m Multiplication) Calculation(x, y int) {
+func (m multiplication) Calculation(x, y int) {
 	fmt.Println(x * y)
 }
 
-type Division struct{}
+type division struct{}
 
-func (a Division) Calculation(x, y int) {
+func (a division) Calculation(x, y int) {
 	fmt.Println(x / y)
 }

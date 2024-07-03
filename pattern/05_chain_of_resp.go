@@ -19,50 +19,53 @@ import "fmt"
 */
 func main() {
 	handlers := NewChain()
-	handlers.HandleRequest(3)
+	handlers.handleRequest(3)
 }
 
-// Конструктор цепочки запросов.
+// NewChain Конструктор цепочки запросов.
 func NewChain() *ConcreteHandlerA {
 	return &ConcreteHandlerA{next: &ConcreteHandlerB{next: &ConcreteHandlerC{}}}
 }
 
-type Handler interface {
-	HandleRequest(request int)
+type handler interface {
+	handleRequest(request int)
 }
 
+// ConcreteHandlerA Первый обработчик.
 type ConcreteHandlerA struct {
-	next Handler
+	next handler
 }
 
-func (h *ConcreteHandlerA) HandleRequest(request int) {
+func (h *ConcreteHandlerA) handleRequest(request int) {
 	if request == 1 {
 		fmt.Println("ConcreteHandlerA")
 	} else if h.next != nil {
-		h.next.HandleRequest(request)
+		h.next.handleRequest(request)
 	}
 }
 
+// ConcreteHandlerB Второй обработчик.
 type ConcreteHandlerB struct {
-	next Handler
+	next handler
 }
 
-func (h *ConcreteHandlerB) HandleRequest(request int) {
+func (h *ConcreteHandlerB) handleRequest(request int) {
 	if request == 2 {
 		fmt.Println("ConcreteHandlerB")
 	} else if h.next != nil {
-		h.next.HandleRequest(request)
+		h.next.handleRequest(request)
 	}
 }
 
+// ConcreteHandlerC Третий обработчик.
 type ConcreteHandlerC struct {
-	next Handler
+	next handler
 }
 
-func (h *ConcreteHandlerC) HandleRequest(request int) {
+func (h *ConcreteHandlerC) handleRequest(request int) {
 	if request == 3 {
 		fmt.Println("ConcreteHandlerC")
 	} else if h.next != nil {
-		h.next.HandleRequest(request)
+		h.next.handleRequest(request)
 	}
 }

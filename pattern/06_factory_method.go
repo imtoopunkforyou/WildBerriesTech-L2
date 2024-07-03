@@ -32,52 +32,52 @@ func main() {
 	product.Use()
 }
 
-// Интерфейс для создания продукта фабрикой.
+// Creator Интерфейс для создания продукта фабрикой.
 type Creator interface {
 	CreateProduct(product int) Product
 }
 
-// Интерфейс созданных продуктов фабрикой.
+// Product Интерфейс созданных продуктов фабрикой.
 type Product interface {
 	Use()
 }
 
-type ConcreteCreator struct{}
+type concreteCreator struct{}
 
-// Конструктор фабрики.
+// NewCreator Конструктор фабрики.
 func NewCreator() Creator {
-	return &ConcreteCreator{}
+	return &concreteCreator{}
 }
 
-func (c *ConcreteCreator) CreateProduct(create int) Product {
+func (c *concreteCreator) CreateProduct(create int) Product {
 	var product Product
 	switch create {
 	case 1:
-		product = &ConcreteProductA{}
+		product = &concreteProductA{}
 	case 2:
-		product = &ConcreteProductB{}
+		product = &concreteProductB{}
 	case 3:
-		product = &ConcreteProductC{}
+		product = &concreteProductC{}
 	default:
 		log.Fatal("Create product fail")
 	}
 	return product
 }
 
-type ConcreteProductA struct{}
+type concreteProductA struct{}
 
-func (c *ConcreteProductA) Use() {
+func (c *concreteProductA) Use() {
 	fmt.Println("Used first product")
 }
 
-type ConcreteProductB struct{}
+type concreteProductB struct{}
 
-func (c *ConcreteProductB) Use() {
+func (c *concreteProductB) Use() {
 	fmt.Println("Used second product")
 }
 
-type ConcreteProductC struct{}
+type concreteProductC struct{}
 
-func (c *ConcreteProductC) Use() {
+func (c *concreteProductC) Use() {
 	fmt.Println("Used third product")
 }

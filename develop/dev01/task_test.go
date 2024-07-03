@@ -6,7 +6,7 @@ import (
 )
 
 func TestGetTime(t *testing.T) {
-	ntp, err := GetTime()
+	ntp, err := getTime()
 	if err != nil {
 		t.Errorf("Can't take current time: %s", err)
 	}

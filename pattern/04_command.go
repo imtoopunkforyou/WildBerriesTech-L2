@@ -19,61 +19,61 @@ import "fmt"
  1. Усложняет код, введением множества дополнительных классов.
 */
 func main() {
-	receiver := &Receiver{}
-	invoker := &Invoker{}
-	invoker.AddCommand(&ButtonON{receiver: receiver})
-	invoker.AddCommand(&ButtonOFF{receiver: receiver})
+	receiver := &receiver{}
+	invoker := &invoker{}
+	invoker.AddCommand(&buttonON{receiver: receiver})
+	invoker.AddCommand(&buttonOFF{receiver: receiver})
 	invoker.Execute()
 }
 
-type Command interface {
+type command interface {
 	Execute()
 }
 
 // Получатель, имеющий набор действий, которые команда может запрашивать.
-type Receiver struct{}
+type receiver struct{}
 
-func (r *Receiver) LightON() {
+func (r *receiver) LightON() {
 	fmt.Println("Light is on")
 }
 
-func (r *Receiver) LightOFF() {
+func (r *receiver) LightOFF() {
 	fmt.Println("Light is off")
 }
 
 // Классы, реализующие конкретные команды.
-type ButtonON struct {
-	receiver *Receiver
+type buttonON struct {
+	receiver *receiver
 }
 
-func (b *ButtonON) Execute() {
+func (b *buttonON) Execute() {
 	b.receiver.LightON()
 }
 
-type ButtonOFF struct {
-	receiver *Receiver
+type buttonOFF struct {
+	receiver *receiver
 }
 
-func (b *ButtonOFF) Execute() {
+func (b *buttonOFF) Execute() {
 	b.receiver.LightOFF()
 }
 
-// Инициатор, записывающий команды в стэк и провоцирует их выполнение.
-type Invoker struct {
-	commands []Command
+// Инициатор, записывающий команды в стек и провоцирует их выполнение.
+type invoker struct {
+	commands []command
 }
 
-func (i *Invoker) AddCommand(command Command) {
+func (i *invoker) AddCommand(command command) {
 	i.commands = append(i.commands, command)
 }
 
-func (i *Invoker) DeleteCommand() {
+func (i *invoker) DeleteCommand() {
 	if len(i.commands) > 0 {
 		i.commands = i.commands[:len(i.commands)-1]
 	}
 }
 
-func (i *Invoker) Execute() {
+func (i *invoker) Execute() {
 	for _, command := range i.commands {
 		command.Execute()
 	}

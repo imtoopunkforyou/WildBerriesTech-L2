@@ -19,43 +19,43 @@ import "fmt"
 func main() {
 	phone := NewMobileAlert()
 	phone.Alert()
-	phone.SetState(&LoudMode{})
+	phone.SetState(&loudMode{})
 	phone.Alert()
 }
 
-// Интерфейс состояния.
+// MobileAlertState Интерфейс состояния.
 type MobileAlertState interface {
 	Alert()
 }
 
-// Структура содержащая текущее состояние.
+// MobileAlert Структура содержащая текущее состояние.
 type MobileAlert struct {
 	State MobileAlertState
 }
 
-// Вызов текущего состояния.
+// Alert Вызов текущего состояния.
 func (m *MobileAlert) Alert() {
 	m.State.Alert()
 }
 
-// Установка состояния для объекта.
+// SetState Установка состояния для объекта.
 func (m *MobileAlert) SetState(state MobileAlertState) {
 	m.State = state
 }
 
-// Конструктор состояния.
+// NewMobileAlert Конструктор состояния.
 func NewMobileAlert() *MobileAlert {
-	return &MobileAlert{&SilentMode{}}
+	return &MobileAlert{&silentMode{}}
 }
 
-type SilentMode struct{}
+type silentMode struct{}
 
-func (s SilentMode) Alert() {
+func (s silentMode) Alert() {
 	fmt.Println("Phone in silent mode")
 }
 
-type LoudMode struct{}
+type loudMode struct{}
 
-func (l LoudMode) Alert() {
+func (l loudMode) Alert() {
 	fmt.Println("Phone in loud mode")
 }
