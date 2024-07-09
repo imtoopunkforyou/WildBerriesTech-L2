@@ -1,7 +1,4 @@
-.PHONY: test
-
-task: task.go
-	@go run .
+.PHONY: test govet golint
 
 test: task_test.go
 	@go test -v
