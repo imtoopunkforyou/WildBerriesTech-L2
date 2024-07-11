@@ -40,35 +40,35 @@ func main() {
 	fl := flags{}
 	flagParse(&fl)
 
-	fileStrs, err := readFile(os.Args[len(os.Args)-1])
+	fileLines, err := readFile(os.Args[len(os.Args)-1])
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	newSort(&fileStrs, &fl)
-	for _, str := range fileStrs {
+	newSort(&fileLines, &fl)
+	for _, str := range fileLines {
 		fmt.Println(str)
 	}
 }
 
 // Сортировка по флагам.
-func newSort(fileStrs *[]string, fl *flags) {
-	if *fl.k > 0 { // todo
-		columnSort(fileStrs)
+func newSort(fileLines *[]string, fl *flags) {
+	removeLastEmptyLine(fileLines)
+	if *fl.k > 0 {
+		columnSort(fileLines, fl.k)
 	}
 	if *fl.n {
-		numericSort(fileStrs)
+		numericSort(fileLines)
 	}
 	if *fl.u {
-		lexicographicalSort(fileStrs)
-		deleteDuplicates(fileStrs)
+		sort.Strings(*fileLines)
+		deleteDuplicates(fileLines)
 	}
 	if *fl.r {
-		reverseSort(fileStrs)
-
+		reverseSort(fileLines)
 	}
 	if *fl.k == 0 && !*fl.n && !*fl.u && !*fl.r {
-		lexicographicalSort(fileStrs)
+		sort.Strings(*fileLines)
 	}
 }
 
@@ -89,70 +89,93 @@ func readFile(inputFile string) ([]string, error) {
 		return nil, err
 	}
 
-	str := string(file)              // Преобразуем файл в строку.
-	strs := strings.Split(str, "\n") // Разбиваем преобразованный файл на строки.
+	str := string(file)               // Преобразуем файл в строку.
+	lines := strings.Split(str, "\n") // Разбиваем преобразованный файл на строки.
 
-	return strs, nil
+	return lines, nil
 }
 
 // Сортировка строк.
-func lexicographicalSort(fileStrs *[]string) {
-	if (*fileStrs)[len(*fileStrs)-1] == "" {
-		*fileStrs = (*fileStrs)[:len(*fileStrs)-1]
+func removeLastEmptyLine(fileLines *[]string) {
+	if (*fileLines)[len(*fileLines)-1] == "" {
+		*fileLines = (*fileLines)[:len(*fileLines)-1]
 	} // Удаляем последнюю строку, если она пустая, чтобы она не входила в сортировку, как в оригинале.
-
-	sort.Strings(*fileStrs)
 }
 
-// Сортирует по колонке.
-func columnSort(fileStrs *[]string) {}
+func columnSort(fileLines *[]string, column *int) {
+	*column-- // Уменьшаем полученную колонку, тк индекс идет с 0.
+	sort.SliceStable(*fileLines, func(i, j int) bool {
+		// Разбиение строк на подстроки-колонки.
+		colsI := strings.Split((*fileLines)[i], " ")
+		colsJ := strings.Split((*fileLines)[j], " ")
+
+		// Проверяем существует ли такие колонки.
+		if *column < len(colsI) && *column < len(colsJ) {
+			// Если колонки одинаковые, то сортируем лексикографически.
+			if colsI[*column] == colsJ[*column] {
+				return (*fileLines)[i] < (*fileLines)[j]
+			} // Иначе сравниваем по значениям в этих колонках.
+			return colsI[*column] < colsJ[*column]
+		}
+		// Если колонка есть в строке J, но нет в строке I, то строка I считается меньшей и идет раньше.
+		if *column >= len(colsI) && *column < len(colsJ) {
+			return true
+		}
+		// Если колонка есть в строке I, но нет в строке J, то строка J считается меньшей и идет раньше.
+		if *column < len(colsI) && *column >= len(colsJ) {
+			return false
+		}
+		// Если ни одно условие не подошло, то сравниваем лексикографически.
+		return (*fileLines)[i] < (*fileLines)[j]
+	})
+}
 
 // Сортирует по числовому значению.
-func numericSort(fileStrs *[]string) {
-	numSlice := extractNumericStrings(fileStrs)
-	lexicographicalSort(fileStrs) // Отдельно сортируем строки.
-	sort.Float64s(numSlice)       // Отдельно сортируем числа.
+func numericSort(fileLines *[]string) {
+	numSlice := extractNumericStrings(fileLines)
+	sort.Strings(*fileLines) // Отдельно сортируем строки.
+	sort.Float64s(numSlice)  // Отдельно сортируем числа.
 
 	for _, num := range numSlice {
-		*fileStrs = append(*fileStrs, strconv.FormatFloat(num, 'f', -1, 64))
+		*fileLines = append(*fileLines, strconv.FormatFloat(num, 'f', -1, 64))
 	} // Добавляем отсортированные числа в наш изначальный слайс.
 }
 
 // Извлечение числовых строк из изначального слайса.
-func extractNumericStrings(fileStrs *[]string) []float64 {
+func extractNumericStrings(fileLines *[]string) []float64 {
 	var charSlice []string // Для записи нечисловых строк.
 	var numSlice []float64 // Для записи числовых строк
 
-	for _, r := range *fileStrs {
+	for _, r := range *fileLines {
 		if num, err := strconv.ParseFloat(r, 64); err == nil {
 			numSlice = append(numSlice, num)
 		} else {
 			charSlice = append(charSlice, r)
 		}
 	}
-	*fileStrs = charSlice // Записываем нечисловые строки в изначальный слайс.
+	*fileLines = charSlice // Записываем нечисловые строки в изначальный слайс.
 
 	return numSlice // Получаем слайс с числами из числовых строк.
 }
 
 // Сортировка в обратном порядке.
-func reverseSort(fileStrs *[]string) {
-	sort.SliceStable(*fileStrs, func(i, j int) bool {
-		return (*fileStrs)[i] > (*fileStrs)[j]
+func reverseSort(fileLines *[]string) {
+	sort.SliceStable(*fileLines, func(i, j int) bool {
+		return (*fileLines)[i] > (*fileLines)[j]
 		// Возвращает true если элементом под индексом i должен идти перед элементом под индексом j.
 	})
 }
 
 // Удаление повторяющихся строк.
-func deleteDuplicates(fileStrs *[]string) {
-	var newStrs []string
+func deleteDuplicates(fileLines *[]string) {
+	var newLines []string
 
-	for i := 0; i < len(*fileStrs); i++ { // Проходимся по заранее отсортированном слайсу.
-		if i > 0 && (*fileStrs)[i] == (*fileStrs)[i-1] {
+	for i := 0; i < len(*fileLines); i++ { // Проходимся по заранее отсортированном слайсу.
+		if i > 0 && (*fileLines)[i] == (*fileLines)[i-1] {
 			continue // Если текущие элемент и предыдущие одинаковые - переходим к следующему.
 		}
-		newStrs = append(newStrs, (*fileStrs)[i]) // Добавляем элементы в новый слайс без дубликатов.
+		newLines = append(newLines, (*fileLines)[i]) // Добавляем элементы в новый слайс без дубликатов.
 	}
 
-	*fileStrs = newStrs // Присваиваем новый слайс без повторений к старому.
+	*fileLines = newLines // Присваиваем новый слайс без повторений к старому.
 }
