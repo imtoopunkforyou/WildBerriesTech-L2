@@ -7,10 +7,10 @@ test: task_test.go
 	@go test -v
 
 govet:
-	@go vet ./
+	@go vet ./...
 
 golint:
-	@golint ./
+	@golint ./...
 
 clean:
 	@rm -f mySort
