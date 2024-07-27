@@ -22,9 +22,9 @@ package main
 */
 
 import (
-	f "dev03/internal/file"
 	fls "dev03/internal/flags"
 	s "dev03/internal/sort"
+	f "dev03/pkg/file"
 	"fmt"
 	"log"
 	"os"
@@ -38,7 +38,7 @@ func main() {
 
 	fl := fls.FlagParse()
 	s.NewSort(&fileLines, fl)
-	
+
 	for _, str := range fileLines {
 		fmt.Println(str)
 	}

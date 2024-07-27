@@ -2,7 +2,7 @@ package sort
 
 import (
 	fls "dev03/internal/flags"
-	utl "dev03/pkg"
+	utl "dev03/pkg/string_utils"
 	"sort"
 	"strconv"
 	"strings"

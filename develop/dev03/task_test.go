@@ -1,9 +1,9 @@
 package main
 
 import (
-	f "dev03/internal/file"
 	fls "dev03/internal/flags"
 	s "dev03/internal/sort"
+	f "dev03/pkg/file"
 	"fmt"
 	"os/exec"
 	"strings"
