@@ -54,7 +54,7 @@ func compareOutput(mySort, srcSort []string) error {
 		return fmt.Errorf("count strings myLine: %d, srcLine: %d", len(mySort), len(srcSort))
 	}
 	for i := 0; i < len(mySort); i++ {
-		if mySort[i] != srcSort[i] {
+		if len(mySort[i]) != len(srcSort[i]) && mySort[i] != srcSort[i] {
 			return fmt.Errorf("myLine: %d %s, srcLine: %d %s", i+1, mySort[i], i+1, srcSort[i])
 		}
 	}

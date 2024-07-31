@@ -3,7 +3,7 @@ package main
 import (
 	fls "dev05/internal/flags"
 	grep "dev05/internal/my_grep"
-	f "dev05/pkg"
+	f "dev05/pkg/file"
 	"log"
 	"os"
 )
@@ -30,5 +30,5 @@ func main() {
 	pattern := os.Args[len(os.Args)-2]
 	fl := fls.FlagParse()
 
-	grep.NewGrep(*fl, pattern, fileLines)
+	grep.NewGrep(fl, &pattern, &fileLines)
 }
