@@ -1,0 +1,26 @@
+Имя	Фамилия	Возраст	Город
+Иван	Иванов	25	Москва
+Петр	Петров	30	Санкт-Петербург
+Анна	Сидорова	22	Новосибирск
+Мария	Смирнова	28	Екатеринбург
+apple orange banana grape
+car bus bike scooter
+cat dog bird fish
+red blue green yellow
+Имя,Фамилия,Возраст,Город
+Иван,Иванов,25,Москва
+Петр,Петров,30,Санкт-Петербург
+Анна,Сидорова,22,Новосибирск
+Мария,Смирнова,28,Екатеринбург
+column1|column2|column3|column4
+data1|data2|data3|data4
+foo|bar|baz|qux
+one|two|three|four
+key1:value1:key2:value2
+username:john:password:1234
+host:localhost:port:8080
+language:Go:version:1.18
+abcdefg
+1234567
+GoLang
+HelloWorld

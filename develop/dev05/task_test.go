@@ -27,9 +27,9 @@ func execSourceGrep(flags, pattern, file string) ([]string, error) {
 		grep = exec.Command("grep", pattern, file)
 	}
 
-	output, err := grep.Output()
+	output, err := grep.CombinedOutput()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("grep: %v\n%s", err, string(output))
 	}
 
 	lines := strings.Split(string(output), "\n")
@@ -61,8 +61,8 @@ func execMyGrep(fl fls.Flags, pattern, file string) ([]string, error) {
 	return lines, nil
 }
 
-func initFlags(AValue, BValue, CValue int, cValue, iValue, vValue, FValue, nValue bool) fls.Flags {
-	return fls.Flags{After: &AValue, Before: &BValue, Context: &CValue, Count: &cValue, IgnoreCase: &iValue,
+func initFlags(AValue, BValue, CValue int, cValue, iValue, vValue, FValue, nValue bool) *fls.Flags {
+	return &fls.Flags{After: &AValue, Before: &BValue, Context: &CValue, Count: &cValue, IgnoreCase: &iValue,
 		Invert: &vValue, Fixed: &FValue, LineNum: &nValue, FirstCall: new(bool)}
 }
 
@@ -85,7 +85,7 @@ func TestKeyA(t *testing.T) {
 	}
 
 	fl := initFlags(3, 0, 0, false, false, false, false, false)
-	myGrep, err := execMyGrep(fl, "main", "task.go")
+	myGrep, err := execMyGrep(*fl, "main", "task.go")
 	if err != nil {
 		t.Errorf("execMyGrep failed: %v", err)
 	}
@@ -103,7 +103,7 @@ func TestKeyB(t *testing.T) {
 	}
 
 	fl := initFlags(0, 3, 0, false, false, false, false, false)
-	myGrep, err := execMyGrep(fl, "main", "task.go")
+	myGrep, err := execMyGrep(*fl, "main", "task.go")
 	if err != nil {
 		t.Errorf("execMyGrep failed: %v", err)
 	}
@@ -121,7 +121,7 @@ func TestKeyContext(t *testing.T) {
 	}
 
 	fl := initFlags(0, 0, 3, false, false, false, false, false)
-	myGrep, err := execMyGrep(fl, "main", "task.go")
+	myGrep, err := execMyGrep(*fl, "main", "task.go")
 	if err != nil {
 		t.Errorf("execMyGrep failed: %v", err)
 	}
@@ -139,7 +139,7 @@ func TestKeyCount(t *testing.T) {
 	}
 
 	fl := initFlags(0, 0, 0, true, false, false, false, false)
-	myGrep, err := execMyGrep(fl, "main", "task.go")
+	myGrep, err := execMyGrep(*fl, "main", "task.go")
 	if err != nil {
 		t.Errorf("execMyGrep failed: %v", err)
 	}
@@ -157,7 +157,7 @@ func TestKeyI(t *testing.T) {
 	}
 
 	fl := initFlags(0, 0, 0, false, true, false, false, false)
-	myGrep, err := execMyGrep(fl, "main", "task.go")
+	myGrep, err := execMyGrep(*fl, "main", "task.go")
 	if err != nil {
 		t.Errorf("execMyGrep failed: %v", err)
 	}
@@ -175,7 +175,7 @@ func TestKeyV(t *testing.T) {
 	}
 
 	fl := initFlags(0, 0, 0, false, false, true, false, false)
-	myGrep, err := execMyGrep(fl, "main", "task.go")
+	myGrep, err := execMyGrep(*fl, "main", "task.go")
 	if err != nil {
 		t.Errorf("execMyGrep failed: %v", err)
 	}
@@ -193,7 +193,7 @@ func TestKeyF(t *testing.T) {
 	}
 
 	fl := initFlags(0, 0, 0, false, false, false, true, false)
-	myGrep, err := execMyGrep(fl, "package main", "task.go")
+	myGrep, err := execMyGrep(*fl, "package main", "task.go")
 	if err != nil {
 		t.Errorf("execMyGrep failed: %v", err)
 	}
@@ -211,7 +211,7 @@ func TestKeyN(t *testing.T) {
 	}
 
 	fl := initFlags(0, 0, 0, false, false, false, false, true)
-	myGrep, err := execMyGrep(fl, "main", "task.go")
+	myGrep, err := execMyGrep(*fl, "main", "task.go")
 	if err != nil {
 		t.Errorf("execMyGrep failed: %v", err)
 	}

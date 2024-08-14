@@ -29,6 +29,5 @@ func main() {
 	}
 	pattern := os.Args[len(os.Args)-2]
 	fl := fls.FlagParse()
-
 	grep.NewGrep(fl, &pattern, &fileLines)
 }

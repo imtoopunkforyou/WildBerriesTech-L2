@@ -1,6 +1,8 @@
 package flags
 
-import "flag"
+import (
+	"flag"
+)
 
 // Flags Структура, которая содержит в себе флаги, для различных сортировок.
 type Flags struct {
@@ -25,6 +27,5 @@ func FlagParse() *Flags {
 	fl.FirstCall = new(bool)
 
 	flag.Parse()
-
 	return &fl
 }

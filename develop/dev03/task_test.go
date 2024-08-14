@@ -24,9 +24,9 @@ func execSourceSort(flags, file string) ([]string, error) {
 		sort = exec.Command("sort", file)
 	}
 
-	output, err := sort.Output()
+	output, err := sort.CombinedOutput()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("sort: %v\n%s", err, string(output))
 	}
 
 	lines := strings.Split(string(output), "\n")
@@ -45,8 +45,8 @@ func execMySort(fl fls.Flags, file string) ([]string, error) {
 	return inputFile, nil
 }
 
-func initFlags(nValue, rValue, uValue bool, kValue int) fls.Flags {
-	return fls.Flags{N: &nValue, R: &rValue, U: &uValue, K: &kValue}
+func initFlags(nValue, rValue, uValue bool, kValue int) *fls.Flags {
+	return &fls.Flags{N: &nValue, R: &rValue, U: &uValue, K: &kValue}
 }
 
 func compareOutput(mySort, srcSort []string) error {
@@ -68,7 +68,7 @@ func TestWithoutKeys(t *testing.T) {
 	}
 	fl := initFlags(false, false, false, 0)
 
-	mySort, err := execMySort(fl, "Makefile")
+	mySort, err := execMySort(*fl, "Makefile")
 	if err != nil {
 		t.Errorf("readFile failed: %v", err)
 	}
@@ -85,7 +85,7 @@ func TestKeyU(t *testing.T) {
 	}
 	fl := initFlags(false, false, true, 0)
 
-	mySort, err := execMySort(fl, "Makefile")
+	mySort, err := execMySort(*fl, "Makefile")
 	if err != nil {
 		t.Errorf("readFile failed: %v", err)
 	}
@@ -102,7 +102,7 @@ func TestKeyR(t *testing.T) {
 	}
 	fl := initFlags(false, true, false, 0)
 
-	mySort, err := execMySort(fl, "Makefile")
+	mySort, err := execMySort(*fl, "Makefile")
 	if err != nil {
 		t.Errorf("readFile failed: %v", err)
 	}
@@ -119,7 +119,7 @@ func TestKeyN(t *testing.T) {
 	}
 	fl := initFlags(true, false, false, 0)
 
-	mySort, err := execMySort(fl, "Makefile")
+	mySort, err := execMySort(*fl, "Makefile")
 	if err != nil {
 		t.Errorf("readFile failed: %v", err)
 	}
@@ -136,7 +136,7 @@ func TestWithCorrectColumnKeyK(t *testing.T) {
 	}
 	fl := initFlags(false, false, false, 1)
 
-	mySort, err := execMySort(fl, "Makefile")
+	mySort, err := execMySort(*fl, "Makefile")
 	if err != nil {
 		t.Errorf("readFile failed: %v", err)
 	}
@@ -153,7 +153,7 @@ func TestWithIncorrectColumnKeyK(t *testing.T) {
 	}
 	fl := initFlags(false, false, false, 2)
 
-	mySort, err := execMySort(fl, "Makefile")
+	mySort, err := execMySort(*fl, "Makefile")
 	if err != nil {
 		t.Errorf("readFile failed: %v", err)
 	}
@@ -170,7 +170,7 @@ func TestWithInvalidColumnKeyK(t *testing.T) {
 	}
 	fl := initFlags(false, false, false, 15)
 
-	mySort, err := execMySort(fl, "Makefile")
+	mySort, err := execMySort(*fl, "Makefile")
 	if err != nil {
 		t.Errorf("readFile failed: %v", err)
 	}
