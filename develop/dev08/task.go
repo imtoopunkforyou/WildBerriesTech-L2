@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -21,17 +22,19 @@ import (
 */
 
 func main() {
-	var input string
-
 	for {
-		fmt.Print(">")
-		fmt.Scanln(&input)
-		New(strings.Fields(input), input)
+		wd := strings.Split(pwd(), "/") // Для вывода конкретной директории разбиваем весь путь на элементы слайса.
+
+		fmt.Print(">/", wd[len(wd)-1], " ")  // Выводим конкретную директорию, в которой мы находимся
+		reader := bufio.NewScanner(os.Stdin) // Создаем reader из stdin.
+		if reader.Scan() {                   // Сканируем полученные данные из stdin.
+			New(strings.Fields(reader.Text()), reader.Text()) // Передача reader в виде строки нужно только для echo.
+		}
 	}
 }
 
 func New(strSlice []string, str string) {
-	switch strSlice[0] {
+	switch strSlice[0] { // Смотрим какая команда пришла.
 	case "pwd":
 		fmt.Println(pwd())
 	case "echo":
@@ -41,7 +44,7 @@ func New(strSlice []string, str string) {
 	case "ps":
 		ps()
 	case "cd":
-		cd()
+		cd(strSlice)
 	case "\\exit":
 		os.Exit(0)
 	default:
@@ -58,30 +61,30 @@ func pwd() string {
 }
 
 func forkExec(strSlice []string) string {
-	cmd := exec.Command(strSlice[0], strSlice[1:]...)
-	res, err := cmd.CombinedOutput()
+	cmd := exec.Command(strSlice[0], strSlice[1:]...) // Вызываем команды из терминала.
+	res, err := cmd.CombinedOutput()                  // Получаем вывод.
 	if err != nil {
 		return err.Error()
 	}
 
 	if len(res) > 0 {
-		return string(res[:len(res)-1]) // Избавляемся от последней пустой слайса.
+		return string(res[:len(res)-1]) // Избавляемся от последней пустой строки слайса.
 	}
 	return ""
 }
 
 func kill(strSlice []string) {
 	for _, str := range strSlice[1:] {
-		id, err := strconv.Atoi(str)
+		id, err := strconv.Atoi(str) // Получаем pid из строки.
 		if err != nil {
 			fmt.Println(err)
-			continue
+			continue // Если ошибка, то идем дальше по слайсу.
 		}
 
-		proc, err := os.FindProcess(id)
+		proc, err := os.FindProcess(id) // Ищем процесс, если получили его из строки.
 		if err != nil {
 			fmt.Println(err)
-			continue
+			continue // Если ошибка, то идем дальше по слайсу.
 		}
 
 		err = proc.Kill()
@@ -95,6 +98,15 @@ func ps() {
 	fmt.Println("kakish")
 }
 
-func cd() {
-	fmt.Println("aboba")
+func cd(strSlice []string) {
+	if len(strSlice) == 1 || strSlice[1] == "~" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			fmt.Println(err)
+		} else { // Если у нас получилось взять домашнюю директорию, то переходим в нее.
+			os.Chdir(home)
+		}
+	} else {
+		os.Chdir(strSlice[1])
+	}
 }
