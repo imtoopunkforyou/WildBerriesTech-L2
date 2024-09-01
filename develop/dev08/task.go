@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/shirou/gopsutil/process"
 	"os"
 	"os/exec"
 	"strconv"
@@ -33,6 +34,7 @@ func main() {
 	}
 }
 
+// New Создание нового терминала.
 func New(strSlice []string, str string) {
 	switch strSlice[0] { // Смотрим какая команда пришла.
 	case "pwd":
@@ -95,7 +97,17 @@ func kill(strSlice []string) {
 }
 
 func ps() {
-	fmt.Println("kakish")
+	proc, err := process.Processes() // Получаем процессы.
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Printf("PID\t TIME\t CMD\n")
+	for _, p := range proc {
+		time, _ := p.Times()  // Получаем время работы процесса.
+		cmd, _ := p.Cmdline() // Получаем имя исполнителя процесса.
+		fmt.Printf("%v\t %0.2f\t %v\n", p.Pid, time.Total(), cmd)
+	}
 }
 
 func cd(strSlice []string) {
@@ -104,9 +116,13 @@ func cd(strSlice []string) {
 		if err != nil {
 			fmt.Println(err)
 		} else { // Если у нас получилось взять домашнюю директорию, то переходим в нее.
-			os.Chdir(home)
+			if err = os.Chdir(home); err != nil {
+				fmt.Println(err)
+			}
 		}
 	} else {
-		os.Chdir(strSlice[1])
+		if err := os.Chdir(strSlice[1]); err != nil {
+			fmt.Println(err)
+		}
 	}
 }
