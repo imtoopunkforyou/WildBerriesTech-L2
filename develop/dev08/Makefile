@@ -1,13 +1,20 @@
-.PHONY: test govet golint
+.PHONY: task test govet golint clean rebuild
 
 task: task.go
-	@go run .
+	@go build -o myShell
 
 test: task_test.go
 	@go test -v
 
 govet:
-	@go vet ./
+	@go vet ./...
 
 golint:
-	@golint ./
+	@golint ./...
+
+clean:
+	@rm -f myShell
+
+rebuild:
+	@make clean
+	@make task
