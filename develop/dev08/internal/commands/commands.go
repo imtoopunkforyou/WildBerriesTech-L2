@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// ForkExec вызов стандартных команд из оболочки терминала.
 func ForkExec(str []string, r io.Reader, w io.Writer) {
 	var outputBuffer bytes.Buffer
 
@@ -30,6 +31,7 @@ func ForkExec(str []string, r io.Reader, w io.Writer) {
 	}
 }
 
+// Echo вывод аргумента в STDOUT.
 func Echo(str []string) string {
 	var res strings.Builder
 	for _, line := range str[1:] {
@@ -40,6 +42,7 @@ func Echo(str []string) string {
 	return res.String()
 }
 
+// Pwd показать путь до текущего каталога.
 func Pwd() string {
 	wd, err := os.Getwd()
 	if err != nil {
@@ -48,6 +51,7 @@ func Pwd() string {
 	return wd
 }
 
+// Kill "убить" процесс, переданный в качестве аргумента.
 func Kill(str []string) {
 	if len(str) < 2 {
 		fmt.Println("kill: not enough arguments")
@@ -74,6 +78,7 @@ func Kill(str []string) {
 	}
 }
 
+// Ps выводит общую информацию по запущенным процессам в формате такой-то формат.
 func Ps(w io.Writer) {
 	proc, err := process.Processes() // Получаем процессы.
 	if err != nil {
@@ -88,6 +93,7 @@ func Ps(w io.Writer) {
 	}
 }
 
+// Cd смена директории (в качестве аргумента могут быть то-то и то).
 func Cd(str []string) {
 	if len(str) == 1 || str[1] == "~" {
 		home, err := os.UserHomeDir()
