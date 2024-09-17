@@ -34,10 +34,20 @@ func ForkExec(str []string, r io.Reader, w io.Writer) {
 // Echo вывод аргумента в STDOUT.
 func Echo(str []string) string {
 	var res strings.Builder
-	for _, line := range str[1:] {
+	for i, line := range str[1:] {
 		line = strings.Trim(line, "\"")
 		line = strings.Trim(line, "'")
-		res.WriteString(line + " ")
+
+		unquotedLine, err := strconv.Unquote("\"" + line + "\"") // Для отображения спец символов \n, \t и т.д.
+		if err != nil {
+			unquotedLine = line // Если ошибка, оставляем строку как есть.
+		}
+
+		if i != len(str[1:])-1 { // Условие, чтобы при записи последнего элемента в конце было пробела.
+			res.WriteString(unquotedLine + " ")
+		} else {
+			res.WriteString(unquotedLine)
+		}
 	}
 	return res.String()
 }

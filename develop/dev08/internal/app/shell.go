@@ -11,19 +11,19 @@ import (
 // HandleLinuxPipes обрабатывает ввод, в зависимости пришла нам одна команда или коневеер.
 func HandleLinuxPipes(input string) {
 	if len(input) > 0 {
-		commands := strings.Split(input, "|") // Разбиваем инпут на пайпы.
+		cmd := strings.Split(input, "|") // Разбиваем инпут на пайпы.
 
 		var prevReader io.Reader = nil // Начальный поток ввода.
-		for i, command := range commands {
+		for i, command := range cmd {
 			if strings.TrimSpace(command) != "" { // Проверяем не пустая ли команда в пайпе.
 				commandSlice := strings.Fields(command)
 
-				if i == len(commands)-1 { // Проверяем последняя/единственная ли команда.
-					execution(commandSlice, prevReader, os.Stdout)
+				if i == len(cmd)-1 { // Проверяем последняя/единственная ли команда.
+					Execution(commandSlice, prevReader, os.Stdout)
 				} else {
 					pr, pw := io.Pipe() // Создаем пайп для передачи данных между командами.
 					go func(cmd []string, in io.Reader, out io.Writer) {
-						execution(cmd, in, out)
+						Execution(cmd, in, out)
 						pw.Close() // Закрываем writer после выполнения команды.
 					}(commandSlice, prevReader, pw)
 
@@ -34,8 +34,8 @@ func HandleLinuxPipes(input string) {
 	}
 }
 
-// Вызов команд для терминала.
-func execution(str []string, r io.Reader, w io.Writer) {
+// Execution Вызов команд для терминала.
+func Execution(str []string, r io.Reader, w io.Writer) {
 	switch str[0] { // Смотрим какая команда пришла.
 	case "pwd":
 		fmt.Fprintln(w, commands.Pwd())
